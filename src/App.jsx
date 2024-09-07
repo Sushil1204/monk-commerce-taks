@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "./components/Header"
 import { MdDragIndicator } from "react-icons/md";
 import { HiPencil } from "react-icons/hi2";
+import ProductPickerModal from "./components/ProductPickerModal";
 
 
 
@@ -12,6 +13,8 @@ function App() {
   ]);
 
   const [draggingItemIndex, setDraggingItemIndex] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Function to handle drag start
   const handleDragStart = (index) => {
@@ -46,6 +49,19 @@ function App() {
       { id: (products.length + 1).toString(), productName: '', discount: '' }
     ]);
   };
+
+
+  // Function to open the modal
+  const openModal = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
   return (
     <>
       <Header />
@@ -73,6 +89,7 @@ function App() {
                       type="text"
                       placeholder={product.productName}
                       className="w-full border border-gray-300 rounded p-2 cursor-pointer"
+                      onClick={() => openModal(product)} // Open modal on input click
                     />
                     <HiPencil size={20}
                       className="absolute left-80 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -98,9 +115,11 @@ function App() {
         </div>
       </div>
 
-      {/* Product List Mapping */}
-
-
+      <ProductPickerModal
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+        productName={selectedProduct?.productName}
+      />
     </>
   )
 }
