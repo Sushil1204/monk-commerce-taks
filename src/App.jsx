@@ -14,7 +14,7 @@ function App() {
   ]);
 
   const [draggingItemIndex, setDraggingItemIndex] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProducts] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Function to handle drag start
@@ -27,10 +27,15 @@ function App() {
     e.preventDefault(); // Prevent default to allow dropping
   };
 
+  const handleSelectedProducts = (products) => {
+    setSelectedProducts(products);
+    console.log("Selected products from modal:", products);
+  };
+
   // Function to handle drop event
   const handleDrop = (index) => {
     const draggedProduct = products[draggingItemIndex];
-    const remainingProducts = products.filter((_, idx) => idx !== draggingItemIndex);
+    const remainingProducts = selectedProduct?.filter((_, idx) => idx !== draggingItemIndex);
 
     // Insert dragged item at the new position
     const updatedProducts = [
@@ -53,16 +58,15 @@ function App() {
 
 
   // Function to open the modal
-  const openModal = (product) => {
-    setSelectedProduct(product);
+  const openModal = () => {
     setIsModalOpen(true);
   };
 
   // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedProduct(null);
   };
+
   return (
     <>
       <Header />
@@ -73,7 +77,7 @@ function App() {
         <div className="grid grid-cols-2 gap-4">
           <p className="ml-2">Product</p>
           <p className="ml-2">Discount</p>
-          {products.map((product, index) => (
+          {selectedProduct?.map((product, index) => (
             <>
               <div
                 key={product?.id}
@@ -89,6 +93,7 @@ function App() {
                   <div className="relative w-full">
                     <input
                       type="text"
+                      // value={product?.title}
                       placeholder="Select Product"
                       className="w-full border border-gray-300 rounded p-2 cursor-pointer"
                       onClick={() => openModal(product)} // Open modal on input click
@@ -100,24 +105,22 @@ function App() {
               </div>
               {/* Discount Button Section (Placed Below Discount Text) */}
               <div className="ml-2">
-                <div className="flex flex-1 gap-3 items-center">
-
+                {/* <div className="flex flex-1 gap-3 items-center">
                   <input type="number" name="discount" className="w-24 border border-gray-300 rounded py-2 px-4 cursor-pointer input-number" />
                   <div className="relative inline-block">
                     <select name="discountType" className="block appearance-none w-24 border border-gray-300 rounded p-2 cursor-pointer">
                       <option value="percent"> % Off </option>
                       <option value="flat"> Flat off </option>
                     </select>
-                    {/* Custom arrow */}
                     <div className="pointer-events-none absolute inset-y-0 left-16 flex items-center px-2 text-gray-700">
                       <FaChevronDown color="gray" />
                     </div>
                   </div>
                   <MdOutlineClose size={25} color="gray" />
-                </div>
-                {/* <button className="flex items-center p-2 bg-green-600 text-white rounded">
+                </div> */}
+                <button className="flex items-center p-2 bg-green-600 text-white rounded">
                   Add Discount
-                </button> */}
+                </button>
               </div>
             </>
           ))}
@@ -125,7 +128,7 @@ function App() {
         <div className="ml-4">
           <button
             onClick={addProduct}
-            className="px-16 py-3 mt-4 ml-80 border-2 border-emerald-600 text-emerald-600 rounded hover:bg-emerald-800 hover:text-white hover:border-none"
+            className="px-16 py-3 mt-4 ml-80 border-2 border-emerald-600 text-emerald-600 rounded hover:bg-emerald-700 hover:outline-none hover:text-white hover:font-semibold hover:border-none"
           >
             Add Product
           </button>
@@ -136,6 +139,7 @@ function App() {
         isOpen={isModalOpen}
         closeModal={closeModal}
         productName={selectedProduct?.productName}
+        onSelectProducts={handleSelectedProducts}
       />
     </>
   )
