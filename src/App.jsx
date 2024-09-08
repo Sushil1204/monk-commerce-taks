@@ -1,15 +1,16 @@
 import { useState } from "react";
 import Header from "./components/Header"
-import { MdDragIndicator } from "react-icons/md";
+import { MdDragIndicator, MdOutlineClose } from "react-icons/md";
 import { HiPencil } from "react-icons/hi2";
 import ProductPickerModal from "./components/ProductPickerModal";
+import { FaChevronDown } from "react-icons/fa";
+
 
 
 
 function App() {
   const [products, setProducts] = useState([
-    { id: '1', productName: '1', discount: '' },
-    { id: '2', productName: '2', discount: '' }
+    { id: '1', productName: '', discount: '' }
   ]);
 
   const [draggingItemIndex, setDraggingItemIndex] = useState(null);
@@ -65,42 +66,58 @@ function App() {
   return (
     <>
       <Header />
-      <div className="mt-6 mx-auto w-1/2">
+      <div className="mt-6 mx-auto w-1/2 px-10">
         <h2 className="mb-4 text-xl font-semibold">Add Products</h2>
 
         {/* Header Section for Product and Discount Labels */}
-        <div class="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <p className="ml-2">Product</p>
           <p className="ml-2">Discount</p>
           {products.map((product, index) => (
             <>
-              <div key={product?.id}
+              <div
+                key={product?.id}
                 draggable
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(index)} className="ml-2 cursor-pointer">
                 <div className="flex items-center">
-                  <MdDragIndicator size={25} />
-                  <span className="mr-2">{index + 1}.</span>
+                  <MdDragIndicator size={35} color="gray" />
+                  <span className="mr-2">{index + 1}. </span>
 
                   {/* Input Section */}
                   <div className="relative w-full">
                     <input
                       type="text"
-                      placeholder={product.productName}
+                      placeholder="Select Product"
                       className="w-full border border-gray-300 rounded p-2 cursor-pointer"
                       onClick={() => openModal(product)} // Open modal on input click
                     />
                     <HiPencil size={20}
-                      className="absolute left-80 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      className="absolute left-60 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   </div>
                 </div>
               </div>
               {/* Discount Button Section (Placed Below Discount Text) */}
               <div className="ml-2">
-                <button className="flex items-center p-2 bg-green-600 text-white rounded">
+                <div className="flex flex-1 gap-3 items-center">
+
+                  <input type="number" name="discount" className="w-24 border border-gray-300 rounded py-2 px-4 cursor-pointer input-number" />
+                  <div className="relative inline-block">
+                    <select name="discountType" className="block appearance-none w-24 border border-gray-300 rounded p-2 cursor-pointer">
+                      <option value="percent"> % Off </option>
+                      <option value="flat"> Flat off </option>
+                    </select>
+                    {/* Custom arrow */}
+                    <div className="pointer-events-none absolute inset-y-0 left-16 flex items-center px-2 text-gray-700">
+                      <FaChevronDown color="gray" />
+                    </div>
+                  </div>
+                  <MdOutlineClose size={25} color="gray" />
+                </div>
+                {/* <button className="flex items-center p-2 bg-green-600 text-white rounded">
                   Add Discount
-                </button>
+                </button> */}
               </div>
             </>
           ))}
