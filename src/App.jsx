@@ -1,21 +1,41 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Header from "./components/Header"
 import { MdDragIndicator, MdOutlineClose } from "react-icons/md";
 import { HiPencil } from "react-icons/hi2";
 import ProductPickerModal from "./components/ProductPickerModal";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 
 
 
 function App() {
-  const [products, setProducts] = useState([
+  const [product, setProduct] = useState([
     { id: '1', productName: '', discount: '' }
   ]);
 
   const [draggingItemIndex, setDraggingItemIndex] = useState(null);
-  const [selectedProduct, setSelectedProducts] = useState(null);
+  const [selectedProduct, setSelectedProducts] = useState([
+    {
+      id: null, // or undefined
+      title: '',
+      variants: [
+        {
+          id: null,
+          product_id: null,
+          title: '',
+          price: ''
+        }
+      ],
+      image: {
+        id: null,
+        product_id: null,
+        src: ''
+      }
+    }
+  ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [visibleDiscount, setVisibleDiscount] = useState(null)
+  const [showVariants, setShowVariants] = useState(false);
 
   // Function to handle drag start
   const handleDragStart = (index) => {
@@ -29,12 +49,11 @@ function App() {
 
   const handleSelectedProducts = (products) => {
     setSelectedProducts(products);
-    console.log("Selected products from modal:", products);
   };
 
   // Function to handle drop event
   const handleDrop = (index) => {
-    const draggedProduct = products[draggingItemIndex];
+    const draggedProduct = product[draggingItemIndex];
     const remainingProducts = selectedProduct?.filter((_, idx) => idx !== draggingItemIndex);
 
     // Insert dragged item at the new position
@@ -44,15 +63,31 @@ function App() {
       ...remainingProducts.slice(index)
     ];
 
-    setProducts(updatedProducts);
+    setProduct(updatedProducts);
     setDraggingItemIndex(null); // Reset drag state
   };
 
   // Handle adding new product row
   const addProduct = () => {
-    setProducts([
-      ...products,
-      { id: (products.length + 1).toString(), productName: '', discount: '' }
+    setSelectedProducts([
+      ...selectedProduct,
+      {
+        id: null,
+        title: '',
+        variants: [
+          {
+            id: null,
+            product_id: null,
+            title: '',
+            price: ''
+          }
+        ],
+        image: {
+          id: null,
+          product_id: null,
+          src: ''
+        }
+      }
     ]);
   };
 
@@ -67,6 +102,10 @@ function App() {
     setIsModalOpen(false);
   };
 
+  const handleDiscountToggle = (index) => {
+    setVisibleDiscount(visibleDiscount === index ? null : index);
+  };
+
   return (
     <>
       <Header />
@@ -78,9 +117,8 @@ function App() {
           <p className="ml-2">Product</p>
           <p className="ml-2">Discount</p>
           {selectedProduct?.map((product, index) => (
-            <>
+            <React.Fragment key={product?.id}>
               <div
-                key={product?.id}
                 draggable
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={handleDragOver}
@@ -93,19 +131,19 @@ function App() {
                   <div className="relative w-full">
                     <input
                       type="text"
-                      // value={product?.title}
+                      value={product?.title?.length > 30 ? `${product?.title.slice(0, 30)}...` : product?.title}
                       placeholder="Select Product"
-                      className="w-full border border-gray-300 rounded p-2 cursor-pointer"
+                      className="w-full border border-gray-300 rounded p-2 cursor-pointer truncate"
                       onClick={() => openModal(product)} // Open modal on input click
                     />
                     <HiPencil size={20}
-                      className="absolute left-60 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   </div>
                 </div>
               </div>
               {/* Discount Button Section (Placed Below Discount Text) */}
               <div className="ml-2">
-                {/* <div className="flex flex-1 gap-3 items-center">
+                {visibleDiscount == index ? <div className="flex flex-1 gap-3 items-center">
                   <input type="number" name="discount" className="w-24 border border-gray-300 rounded py-2 px-4 cursor-pointer input-number" />
                   <div className="relative inline-block">
                     <select name="discountType" className="block appearance-none w-24 border border-gray-300 rounded p-2 cursor-pointer">
@@ -117,12 +155,57 @@ function App() {
                     </div>
                   </div>
                   <MdOutlineClose size={25} color="gray" />
-                </div> */}
-                <button className="flex items-center p-2 bg-green-600 text-white rounded">
-                  Add Discount
-                </button>
+                </div> :
+                  <button className="flex items-center p-2 bg-green-600 text-white rounded w-40" onClick={() => handleDiscountToggle(index)}>
+                    Add Discount
+                  </button>}
               </div>
-            </>
+              {product?.id != null && <div className="col-span-2">
+                <div
+                  onClick={() => setShowVariants(!showVariants)}
+                  className="flex gap-2 mb-2 items-center float-right mr-24 cursor-pointer"
+                >
+                  {showVariants ?
+                    <>
+                      <p className="text-blue-600 text-sm font-medium">Hide Variants</p>
+                      <FaChevronUp color="blue" />
+                    </>
+                    :
+                    <>
+                      <p className="text-blue-600 text-sm font-medium">Show Variants</p>
+                      <FaChevronDown color="blue" />
+                    </>
+                  }
+                </div>
+              </div>
+              }
+              {showVariants && <div className="col-span-2">
+                {product?.variants?.map((variant, variantIndex) => (
+                  <div key={variant.id} className="flex gap-2 mb-2 items-center float-right mr-12">
+                    <MdDragIndicator size={35} color="gray" />
+                    <input
+                      type="text"
+                      value={variant.title}
+                      placeholder="Variant Title"
+                      className="w-1/3 border border-gray-300 rounded p-2"
+                      readOnly
+                    />
+                    <input type="number" name="discount" className="w-24 border border-gray-300 rounded py-2 px-4 cursor-pointer input-number" />
+                    <div className="relative inline-block">
+                      <select name="discountType" className="block appearance-none w-24 border border-gray-300 rounded p-2 cursor-pointer">
+                        <option value="percent"> % Off </option>
+                        <option value="flat"> Flat off </option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 left-16 flex items-center px-2 text-gray-700">
+                        <FaChevronDown color="gray" />
+                      </div>
+                    </div>
+                    <MdOutlineClose size={25} color="gray" />
+                  </div>
+                ))}
+              </div>}
+
+            </React.Fragment>
           ))}
         </div>
         <div className="ml-4">

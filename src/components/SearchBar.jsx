@@ -1,7 +1,7 @@
 import React from 'react'
 import { GoSearch } from 'react-icons/go'
 
-const SearchBar = ({ searchTerm, setSearchTerm }) => {
+const SearchBar = ({ setSearchTerm }) => {
     return (
         <div className="relative mx-4">
             <input

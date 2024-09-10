@@ -1,13 +1,12 @@
 import React from 'react'
 
-const ProductList = ({ searchResults, initialData, handleScroll, toggleCheckbox, toggleVariantCheckbox, isProductSelected, isVariantSelected }) => {
+const ProductList = ({ searchResults, toggleCheckbox, toggleVariantCheckbox, isProductSelected, isVariantSelected, innerRef }) => {
     return (
-        <div className="h-80 overflow-auto" onScroll={handleScroll}>
-            {searchResults?.slice(0, initialData?.to).map((product) => (
-                <React.Fragment key={product?.id}>
-                    <div className="flex items-center px-4 py-2 gap-4 border border-y-gray-300">
+        <>
+            {searchResults?.map((product) => (
+                <React.Fragment key={product?.name}>
+                    <div className="flex items-center px-4 py-2 gap-4 border border-y-gray-300" ref={innerRef}>
                         <div className="flex items-center cursor-pointer" onClick={() => toggleCheckbox(product?.id)} role="checkbox" aria-checked={isProductSelected(product?.id)} tabIndex={0}
-
                         >
                             {/* Product checkbox */}
                             <div
@@ -32,7 +31,7 @@ const ProductList = ({ searchResults, initialData, handleScroll, toggleCheckbox,
                                 )}
                             </div>
                         </div>
-                        <img src={product?.image?.src} alt="product_image" width={40} height={40} className='rounded-md' />
+                        <img loading='lazy' src={product?.image?.src} alt="product_image" width={40} height={40} className='rounded-md' />
                         <p className='text-base font-normal text-black'>{product?.title}</p>
                     </div>
                     {product.variants?.map((variant) => (
@@ -68,16 +67,15 @@ const ProductList = ({ searchResults, initialData, handleScroll, toggleCheckbox,
 
                             </div>
                             <p className='text-sm font-normal text-black'>{variant?.title}</p>
-                            <div className="flex justify-end w-1/2 gap-3">
+                            <div className="flex justify-end gap-4 ml-4">
                                 <p className='text-base font-normal text-black'>99 available</p>
                                 <p className='text-base font-normal text-black'>${variant?.price}</p>
                             </div>
                         </div>
                     ))}
-
                 </React.Fragment>
             ))}
-        </div>
+        </>
     )
 }
 
