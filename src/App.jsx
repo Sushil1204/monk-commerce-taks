@@ -205,7 +205,7 @@ function App() {
                 <div className="col-span-2 flex items-center justify-evenly md:gap-4">
                   <div className="flex items-center">
                     <MdDragIndicator size={35} color="gray" />
-                    <span className="mr-2 dark:text-white">1. </span>
+                    <span className="mr-2 dark:text-white">{index + 1}. </span>
                     <div className="relative">
                       <input
                         type="text"
@@ -268,7 +268,7 @@ function App() {
                     className={`col-span-2 flex  justify-end  md:gap-4 mr-28 mb-2 ${dragOverVariantIndex?.productIndex === index && dragOverVariantIndex?.variantIndex === variantIndex ? 'bg-gray-400 p-2 rounded-md' : ''} `}>
                     <div className="flex items-center ">
                       <MdDragIndicator size={35} color="gray" />
-                      <span className="mr-2 dark:text-white">1. </span>
+                      <span className="mr-2 dark:text-white">{variantIndex + 1}. </span>
                       <input
                         type="text"
                         value={variant.title}
