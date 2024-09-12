@@ -15,14 +15,6 @@ const ProductPickerModal = ({ isOpen, closeModal, onSelectProducts, selectedInde
 
     const debouncedSearchTerm = useDebounceHook(searchTerm, 2000) // custom hook for debouncing
 
-
-    // Synchronize selectedProducts with selectedProductsFromParent
-    // useEffect(() => {
-    //     setSelectedProducts(selectedProductsFromParent);
-    // }, [selectedProductsFromParent]);
-
-
-    // console.log("selectedProductsFromParent", selectedProductsFromParent)
     // query funtion
     const fetchProductList = async ({ pageParam = 1 }) => {
         const response = await axios.get('https://stageapi.monkcommerce.app/task/products/search', {
