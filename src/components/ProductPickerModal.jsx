@@ -25,7 +25,7 @@ const ProductPickerModal = ({ isOpen, closeModal, onSelectProducts, selectedInde
     // console.log("selectedProductsFromParent", selectedProductsFromParent)
     // query funtion
     const fetchProductList = async ({ pageParam = 1 }) => {
-        const response = await axios.get('http://stageapi.monkcommerce.app/task/products/search', {
+        const response = await axios.get('https://stageapi.monkcommerce.app/task/products/search', {
             params: {
                 search: searchTerm,
                 page: pageParam,
