@@ -7,7 +7,7 @@ import ProductList from './ProductList';
 import useDebounceHook from '../hooks/useDebounceHook';
 import { useInView } from 'react-intersection-observer';
 
-const ProductPickerModal = ({ isOpen, closeModal, productName, onSelectProducts }) => {
+const ProductPickerModal = ({ isOpen, closeModal, onSelectProducts, selectedIndex }) => {
     const { ref, inView } = useInView() // State to track the last element
     const [searchTerm, setSearchTerm] = useState('') // State to  store search term
     const [selectedProducts, setSelectedProducts] = useState([]) // State to store selected products
@@ -15,6 +15,14 @@ const ProductPickerModal = ({ isOpen, closeModal, productName, onSelectProducts 
 
     const debouncedSearchTerm = useDebounceHook(searchTerm, 2000) // custom hook for debouncing
 
+
+    // Synchronize selectedProducts with selectedProductsFromParent
+    // useEffect(() => {
+    //     setSelectedProducts(selectedProductsFromParent);
+    // }, [selectedProductsFromParent]);
+
+
+    // console.log("selectedProductsFromParent", selectedProductsFromParent)
     // query funtion
     const fetchProductList = async ({ pageParam = 1 }) => {
         const response = await axios.get('/api/task/products/search', {
@@ -117,24 +125,24 @@ const ProductPickerModal = ({ isOpen, closeModal, productName, onSelectProducts 
     // Add the products
     const handleAddProducts = () => {
         // Call the function passed from the parent with the selectedProducts array
-        onSelectProducts(selectedProducts);
+        onSelectProducts(selectedProducts, selectedIndex);
         closeModal();  // Optionally close the modal after adding
     };
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="bg-black opacity-50 absolute inset-0" onClick={closeModal}></div>
-            <div className="w-1/3 min-w-fit flex flex-col gap-2 bg-white z-10 rounded-md">
+            <div className="w-1/3 min-w-fit flex flex-col gap-2 bg-white z-10 rounded-md dark:bg-slate-800">
                 {/* modal header start */}
                 <div className="flex items-center justify-between px-6 py-2 border-b border-gray-300">
-                    <h2 className="text-lg font-semibold text-black">Select Products</h2>
+                    <h2 className="text-lg font-semibold text-black dark:text-white">Select Products</h2>
                     <IoMdClose size={25} onClick={closeModal} className='cursor-pointer' />
                 </div>
                 {/* modal header end */}
                 {/* product search bar */}
                 <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 {/* prouct list  */}
-                <div className='h-80 overflow-y-scroll scroll-smooth'>
+                <div className='h-80 overflow-y-scroll scroll-smooth custom-scrollbar'>
                     {isFetching && (
                         <div className='loader'>
                         </div>
@@ -161,9 +169,9 @@ const ProductPickerModal = ({ isOpen, closeModal, productName, onSelectProducts 
 
                 <div className="border-t border-gray-300">
                     <div className="flex items-center justify-between px-6 py-2 ">
-                        <h2 className="text-base">{selectedProducts?.length} product selected</h2>
+                        <h2 className="text-base dark:text-white">{selectedProducts?.length} {selectedProducts?.length > 1 ? 'products selected' : 'product selected'}</h2>
                         <div className="flex gap-3">
-                            <button className="px-8 py-1 border-2 border-gray-400 text-gray-600 text-base font-semibold rounded" onClick={closeModal}>Cancel</button>
+                            <button className="px-8 py-1 border-2 border-gray-400 text-gray-600 text-base font-semibold rounded dark:text-white" onClick={closeModal}>Cancel</button>
                             <button className=" px-8 py-1 bg-emerald-600 text-white rounded" onClick={handleAddProducts}>Add</button>
                         </div>
                     </div>

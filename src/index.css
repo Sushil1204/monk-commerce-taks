@@ -6,6 +6,10 @@
   padding: 0;
 }
 
+body {
+  min-width: 600px;
+}
+
 .input-number::-webkit-outer-spin-button,
 .input-number::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -27,4 +31,27 @@
   100% {
     background-size: 100%;
   }
+}
+
+/* Custom scrollbar for Webkit-based browsers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px; /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #6b7280; /* Color of the scrollbar thumb */
+  border-radius: 4px; /* Rounded corners of the scrollbar thumb */
+}
+
+/* Custom scrollbar for Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #6b7280 transparent;
 }
